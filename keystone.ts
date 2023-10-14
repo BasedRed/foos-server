@@ -23,7 +23,9 @@ export default withAuth(
       // provider: 'sqlite',
       // url: 'file:./keystone.db',
       provider: "postgresql",
-      url: process.env.DATABASE_URL ?? "",
+      url:
+        process.env.DATABASE_URL ??
+        "postgresql://postgres:BeFPHwWxzKyOzW2P6wy0@containers-us-west-80.railway.app:6100/railway",
     },
     lists,
     session,
