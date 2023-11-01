@@ -209,7 +209,7 @@ var keystone_default = withAuth(
       //   see https://keystonejs.com/docs/guides/choosing-a-database#title
       // provider: 'sqlite',
       provider: process.env.DB_TYPE ?? "sqlite",
-      // provider: 'sqlite',
+      // provider: 'postgresql',
       // url: 'file:./keystone.db',
       // url: process.env.DATABASE_URL ?? '',
       url: process.env.NODE_ENV === "production" ? process.env.DATABASE_URL ?? "" : "file:./keystone.db"
