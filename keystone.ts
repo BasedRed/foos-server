@@ -21,7 +21,7 @@ export default withAuth(
             //   for more information on what database might be appropriate for you
             //   see https://keystonejs.com/docs/guides/choosing-a-database#title
             // provider: 'sqlite',
-            provider: process.env.NODE_ENV === 'production' ? 'postgresql' : 'sqlite',
+            provider: (process.env.DB_TYPE as 'sqlite' | 'postgresql') ?? 'sqlite',
             // provider: 'sqlite',
             // url: 'file:./keystone.db',
             // url: process.env.DATABASE_URL ?? '',
