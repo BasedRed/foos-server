@@ -208,9 +208,11 @@ var keystone_default = withAuth(
       //   for more information on what database might be appropriate for you
       //   see https://keystonejs.com/docs/guides/choosing-a-database#title
       // provider: 'sqlite',
-      // url: 'file:./keystone.db',
-      provider: process.env.NODE_ENV !== "production" ? "sqlite" : "postgresql",
-      url: process.env.NODE_ENV !== "production" ? "file:./keystone.db" : process.env.DATABASE_URL ?? ""
+      // provider: process.env.NODE_ENV === 'production' ? 'postgresql' : 'sqlite',
+      provider: "sqlite",
+      url: "file:./keystone.db"
+      // url: process.env.DATABASE_URL ?? '',
+      // url: process.env.NODE_ENV === 'production' ? process.env.DATABASE_URL ?? '' : 'file:./keystone.db',
     },
     lists,
     session
