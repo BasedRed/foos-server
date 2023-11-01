@@ -6,8 +6,10 @@ type User {
   name: String
   email: String
   password: PasswordState
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
+  matchesWon(where: MatchWhereInput! = {}, orderBy: [MatchOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MatchWhereUniqueInput): [Match!]
+  matchesWonCount(where: MatchWhereInput! = {}): Int
+  matchesLost(where: MatchWhereInput! = {}, orderBy: [MatchOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MatchWhereUniqueInput): [Match!]
+  matchesLostCount(where: MatchWhereInput! = {}): Int
   createdAt: DateTime
 }
 
@@ -29,7 +31,8 @@ input UserWhereInput {
   id: IDFilter
   name: StringFilter
   email: StringFilter
-  posts: PostManyRelationFilter
+  matchesWon: MatchManyRelationFilter
+  matchesLost: MatchManyRelationFilter
   createdAt: DateTimeNullableFilter
 }
 
@@ -55,13 +58,7 @@ input StringFilter {
   contains: String
   startsWith: String
   endsWith: String
-  mode: QueryMode
   not: NestedStringFilter
-}
-
-enum QueryMode {
-  default
-  insensitive
 }
 
 input NestedStringFilter {
@@ -78,10 +75,10 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
-input PostManyRelationFilter {
-  every: PostWhereInput
-  some: PostWhereInput
-  none: PostWhereInput
+input MatchManyRelationFilter {
+  every: MatchWhereInput
+  some: MatchWhereInput
+  none: MatchWhereInput
 }
 
 input DateTimeNullableFilter {
@@ -111,15 +108,16 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
-  posts: PostRelateToManyForUpdateInput
+  matchesWon: MatchRelateToManyForUpdateInput
+  matchesLost: MatchRelateToManyForUpdateInput
   createdAt: DateTime
 }
 
-input PostRelateToManyForUpdateInput {
-  disconnect: [PostWhereUniqueInput!]
-  set: [PostWhereUniqueInput!]
-  create: [PostCreateInput!]
-  connect: [PostWhereUniqueInput!]
+input MatchRelateToManyForUpdateInput {
+  disconnect: [MatchWhereUniqueInput!]
+  set: [MatchWhereUniqueInput!]
+  create: [MatchCreateInput!]
+  connect: [MatchWhereUniqueInput!]
 }
 
 input UserUpdateArgs {
@@ -131,58 +129,74 @@ input UserCreateInput {
   name: String
   email: String
   password: String
-  posts: PostRelateToManyForCreateInput
+  matchesWon: MatchRelateToManyForCreateInput
+  matchesLost: MatchRelateToManyForCreateInput
   createdAt: DateTime
 }
 
-input PostRelateToManyForCreateInput {
-  create: [PostCreateInput!]
-  connect: [PostWhereUniqueInput!]
+input MatchRelateToManyForCreateInput {
+  create: [MatchCreateInput!]
+  connect: [MatchWhereUniqueInput!]
 }
 
-type Post {
+type Match {
   id: ID!
-  title: String
-  content: Post_content_Document
-  author: User
-  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
-  tagsCount(where: TagWhereInput! = {}): Int
+  date: DateTime
+  game: Game
+  winner: User
+  winnerScore: Int
+  loser: User
+  loserScore: Int
 }
 
-type Post_content_Document {
-  document(hydrateRelationships: Boolean! = false): JSON!
-}
-
-input PostWhereUniqueInput {
+input MatchWhereUniqueInput {
   id: ID
 }
 
-input PostWhereInput {
-  AND: [PostWhereInput!]
-  OR: [PostWhereInput!]
-  NOT: [PostWhereInput!]
+input MatchWhereInput {
+  AND: [MatchWhereInput!]
+  OR: [MatchWhereInput!]
+  NOT: [MatchWhereInput!]
   id: IDFilter
-  title: StringFilter
-  author: UserWhereInput
-  tags: TagManyRelationFilter
+  date: DateTimeNullableFilter
+  game: GameWhereInput
+  winner: UserWhereInput
+  winnerScore: IntFilter
+  loser: UserWhereInput
+  loserScore: IntFilter
 }
 
-input TagManyRelationFilter {
-  every: TagWhereInput
-  some: TagWhereInput
-  none: TagWhereInput
+input IntFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntFilter
 }
 
-input PostOrderByInput {
+input MatchOrderByInput {
   id: OrderDirection
-  title: OrderDirection
+  date: OrderDirection
+  winnerScore: OrderDirection
+  loserScore: OrderDirection
 }
 
-input PostUpdateInput {
-  title: String
-  content: JSON
-  author: UserRelateToOneForUpdateInput
-  tags: TagRelateToManyForUpdateInput
+input MatchUpdateInput {
+  date: DateTime
+  game: GameRelateToOneForUpdateInput
+  winner: UserRelateToOneForUpdateInput
+  winnerScore: Int
+  loser: UserRelateToOneForUpdateInput
+  loserScore: Int
+}
+
+input GameRelateToOneForUpdateInput {
+  create: GameCreateInput
+  connect: GameWhereUniqueInput
+  disconnect: Boolean
 }
 
 input UserRelateToOneForUpdateInput {
@@ -191,23 +205,23 @@ input UserRelateToOneForUpdateInput {
   disconnect: Boolean
 }
 
-input TagRelateToManyForUpdateInput {
-  disconnect: [TagWhereUniqueInput!]
-  set: [TagWhereUniqueInput!]
-  create: [TagCreateInput!]
-  connect: [TagWhereUniqueInput!]
+input MatchUpdateArgs {
+  where: MatchWhereUniqueInput!
+  data: MatchUpdateInput!
 }
 
-input PostUpdateArgs {
-  where: PostWhereUniqueInput!
-  data: PostUpdateInput!
+input MatchCreateInput {
+  date: DateTime
+  game: GameRelateToOneForCreateInput
+  winner: UserRelateToOneForCreateInput
+  winnerScore: Int
+  loser: UserRelateToOneForCreateInput
+  loserScore: Int
 }
 
-input PostCreateInput {
-  title: String
-  content: JSON
-  author: UserRelateToOneForCreateInput
-  tags: TagRelateToManyForCreateInput
+input GameRelateToOneForCreateInput {
+  create: GameCreateInput
+  connect: GameWhereUniqueInput
 }
 
 input UserRelateToOneForCreateInput {
@@ -215,49 +229,49 @@ input UserRelateToOneForCreateInput {
   connect: UserWhereUniqueInput
 }
 
-input TagRelateToManyForCreateInput {
-  create: [TagCreateInput!]
-  connect: [TagWhereUniqueInput!]
-}
-
-type Tag {
+type Game {
   id: ID!
-  name: String
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
-  postsCount(where: PostWhereInput! = {}): Int
+  title: String
+  matches(where: MatchWhereInput! = {}, orderBy: [MatchOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MatchWhereUniqueInput): [Match!]
+  matchesCount(where: MatchWhereInput! = {}): Int
+  date: DateTime
 }
 
-input TagWhereUniqueInput {
+input GameWhereUniqueInput {
   id: ID
 }
 
-input TagWhereInput {
-  AND: [TagWhereInput!]
-  OR: [TagWhereInput!]
-  NOT: [TagWhereInput!]
+input GameWhereInput {
+  AND: [GameWhereInput!]
+  OR: [GameWhereInput!]
+  NOT: [GameWhereInput!]
   id: IDFilter
-  name: StringFilter
-  posts: PostManyRelationFilter
+  title: StringFilter
+  matches: MatchManyRelationFilter
+  date: DateTimeNullableFilter
 }
 
-input TagOrderByInput {
+input GameOrderByInput {
   id: OrderDirection
-  name: OrderDirection
+  title: OrderDirection
+  date: OrderDirection
 }
 
-input TagUpdateInput {
-  name: String
-  posts: PostRelateToManyForUpdateInput
+input GameUpdateInput {
+  title: String
+  matches: MatchRelateToManyForUpdateInput
+  date: DateTime
 }
 
-input TagUpdateArgs {
-  where: TagWhereUniqueInput!
-  data: TagUpdateInput!
+input GameUpdateArgs {
+  where: GameWhereUniqueInput!
+  data: GameUpdateInput!
 }
 
-input TagCreateInput {
-  name: String
-  posts: PostRelateToManyForCreateInput
+input GameCreateInput {
+  title: String
+  matches: MatchRelateToManyForCreateInput
+  date: DateTime
 }
 
 """
@@ -272,18 +286,18 @@ type Mutation {
   updateUsers(data: [UserUpdateArgs!]!): [User]
   deleteUser(where: UserWhereUniqueInput!): User
   deleteUsers(where: [UserWhereUniqueInput!]!): [User]
-  createPost(data: PostCreateInput!): Post
-  createPosts(data: [PostCreateInput!]!): [Post]
-  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
-  updatePosts(data: [PostUpdateArgs!]!): [Post]
-  deletePost(where: PostWhereUniqueInput!): Post
-  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
-  createTag(data: TagCreateInput!): Tag
-  createTags(data: [TagCreateInput!]!): [Tag]
-  updateTag(where: TagWhereUniqueInput!, data: TagUpdateInput!): Tag
-  updateTags(data: [TagUpdateArgs!]!): [Tag]
-  deleteTag(where: TagWhereUniqueInput!): Tag
-  deleteTags(where: [TagWhereUniqueInput!]!): [Tag]
+  createMatch(data: MatchCreateInput!): Match
+  createMatches(data: [MatchCreateInput!]!): [Match]
+  updateMatch(where: MatchWhereUniqueInput!, data: MatchUpdateInput!): Match
+  updateMatches(data: [MatchUpdateArgs!]!): [Match]
+  deleteMatch(where: MatchWhereUniqueInput!): Match
+  deleteMatches(where: [MatchWhereUniqueInput!]!): [Match]
+  createGame(data: GameCreateInput!): Game
+  createGames(data: [GameCreateInput!]!): [Game]
+  updateGame(where: GameWhereUniqueInput!, data: GameUpdateInput!): Game
+  updateGames(data: [GameUpdateArgs!]!): [Game]
+  deleteGame(where: GameWhereUniqueInput!): Game
+  deleteGames(where: [GameWhereUniqueInput!]!): [Game]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -310,12 +324,12 @@ type Query {
   users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   user(where: UserWhereUniqueInput!): User
   usersCount(where: UserWhereInput! = {}): Int
-  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
-  post(where: PostWhereUniqueInput!): Post
-  postsCount(where: PostWhereInput! = {}): Int
-  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
-  tag(where: TagWhereUniqueInput!): Tag
-  tagsCount(where: TagWhereInput! = {}): Int
+  matches(where: MatchWhereInput! = {}, orderBy: [MatchOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MatchWhereUniqueInput): [Match!]
+  match(where: MatchWhereUniqueInput!): Match
+  matchesCount(where: MatchWhereInput! = {}): Int
+  games(where: GameWhereInput! = {}, orderBy: [GameOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: GameWhereUniqueInput): [Game!]
+  game(where: GameWhereUniqueInput!): Game
+  gamesCount(where: GameWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
@@ -406,6 +420,11 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
 enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
   form
   sidebar
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 type KeystoneAdminUIFieldGroupMeta {

@@ -22,8 +22,8 @@ export default withAuth(
             //   see https://keystonejs.com/docs/guides/choosing-a-database#title
             // provider: 'sqlite',
             // url: 'file:./keystone.db',
-            provider: 'postgresql',
-            url: process.env.DATABASE_URL ?? '',
+            provider: process.env.NODE_ENV !== 'production' ? 'sqlite' : 'postgresql',
+            url: process.env.NODE_ENV !== 'production' ? 'file:./keystone.db' : process.env.DATABASE_URL ?? '',
         },
         lists,
         session,
