@@ -22,11 +22,13 @@ export default withAuth(
             //   for more information on what database might be appropriate for you
             //   see https://keystonejs.com/docs/guides/choosing-a-database#title
             // provider: 'sqlite',
-            provider: process.env.NODE_ENV === 'production' ? 'postgresql' : 'mysql',
-            // provider: 'postgresql',
+            // provider: process.env.NODE_ENV === 'production' ? 'postgresql' : 'mysql',
+            provider: 'postgresql',
             // url: 'file:./keystone.db',
-            // url: process.env.DATABASE_URL ?? '',
-            url: process.env.NODE_ENV === 'production' ? process.env.DATABASE_URL ?? '' : 'file:./keystone.db',
+            url:
+                process.env.DATABASE_URL ??
+                'postgres://postgres:e-DC4E6CcEbCB3*DbDC332Gg3G15fGEb@roundhouse.proxy.rlwy.net:49040/railway',
+            // url: process.env.NODE_ENV === 'production' ? process.env.DATABASE_URL ?? '' : 'file:./keystone.db',
         },
         lists,
         session,
